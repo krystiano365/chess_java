@@ -21,6 +21,7 @@ public class Starter extends Application {
         primaryStage.setTitle("Krystian-Chess");
         primaryStage.setResizable(false);
         primaryStage.setScene(gameState.startScreen(primaryStage));
+        primaryStage.sizeToScene();
         primaryStage.show();
 
         System.out.println("Exiting start");

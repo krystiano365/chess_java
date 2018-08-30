@@ -24,6 +24,7 @@ public class GameState {
 
     public List<Figure> figures = new ArrayList<>(); //figury
     public Tile[][] mapTiles = new Tile[Consts.MAP_WIDTH][Consts.MAP_HEIGHT]; //kafelki mapy
+    public List<Point> moves; // możliwe ruchy
     public Button startButton;
     public Pane pane = new Pane();
 

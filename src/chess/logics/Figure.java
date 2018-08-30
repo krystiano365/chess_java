@@ -3,7 +3,7 @@ package chess.logics;
 import chess.ui.Tile;
 import javafx.event.EventHandler;
 import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
@@ -32,9 +32,9 @@ public abstract class Figure implements MoveValidator {
         this.introduceYourself();
         this.owner = owner;
         this.gameState = gameState;
-        this.field = new Tile(currentPosition.x , currentPosition.y);
-        this.field.addEventHandler(MouseEvent.MOUSE_CLICKED, figureMouseEvent); //dodanie obslugi inputu tego klawisza
-        this.gameState.pane.getChildren().add(this.field); //dodanie tego klawisza do jakiejs petli renderujacej (cos w tym stylu, to sprawia ze jest wyswietlane)
+        field = new Tile(currentPosition.x , currentPosition.y);
+        field.addEventHandler(MouseEvent.MOUSE_CLICKED, figureMouseEvent); //dodanie obslugi inputu tego klawisza
+        this.gameState.pane.getChildren().add(field); //dodanie tego klawisza do jakiejs petli renderujacej (cos w tym stylu, to sprawia ze jest wyswietlane)
 
         try {
             String imageDir = System.getProperty("user.dir") + "/assets/" + figureType.toString() + "_" + owner.toString() + ".png";
@@ -52,37 +52,59 @@ public abstract class Figure implements MoveValidator {
                 + currentPosition.x + " " + currentPosition.y);
     }
 
+    public EventHandler<MouseEvent> moveFigureEvent = (clickEvent) -> {
+        int clickX = (int) (clickEvent.getX() / Consts.TILE_SIZE);
+        int clickY = (int) (clickEvent.getY() / Consts.TILE_SIZE);
+
+        for (Point p : gameState.moves){
+
+            if (p.x == clickX && p.y == clickY && clickEvent.getButton() == MouseButton.PRIMARY){
+                this.field.setX(clickX * Consts.TILE_SIZE);
+                this.field.setY(clickY * Consts.TILE_SIZE);
+                this.currentPosition.x = clickX;
+                this.currentPosition.y = clickY;
+                gameState.normalColorTiles();
+            }
+        }
+        gameState.moves.clear();
+        gameState.clickedSomeFigure = false;
+    };
+
 
     public EventHandler<MouseEvent> figureMouseEvent = (clickEvent) -> {
         System.out.println("Just clicked " + figureType);
+        if(this.gameState.clickedSomeFigure){
+            gameState.normalColorTiles();
+            gameState.moves.clear();
+        }
 
-        gameState.normalColorTiles();
         this.gameState.clickedSomeFigure = true;
 
         int clickX = (int) (clickEvent.getX() / Consts.TILE_SIZE); //x, y w kafelkach (0-8) miejsca w ktore kliknieto
         int clickY = (int) (clickEvent.getY() / Consts.TILE_SIZE);
 
         Point clickedPoint = new Point(clickX, clickY);
-        List<Point> moves = getPossibleMoves(clickedPoint);
+        gameState.moves = getPossibleMoves(clickedPoint);
 
-        for(Point p : moves){
+        for(Point p : gameState.moves) {
             System.out.println("Possible: " + p.x + " " + p.y);
             Tile t = this.gameState.mapTiles[p.x][p.y];
-            
-            if(t.isWhite()){
+
+            if (t.isWhite()) {
 
                 t.setFill(Color.rgb(
-                    Consts.BASE_TILE_WHITE_R - Consts.DELTA_TILE_R,
-                    Consts.BASE_TILE_WHITE_G - Consts.DELTA_TILE_G,
-                    Consts.BASE_TILE_WHITE_B - Consts.DELTA_TILE_B));
+                        Consts.BASE_TILE_WHITE_R - Consts.DELTA_TILE_R,
+                        Consts.BASE_TILE_WHITE_G - Consts.DELTA_TILE_G,  //  podświetlanie białych kafelków
+                        Consts.BASE_TILE_WHITE_B - Consts.DELTA_TILE_B));
 
             } else {
                 t.setFill(Color.rgb(
                         Consts.BASE_TILE_BLACK_R - Consts.DELTA_TILE_R,
-                        Consts.BASE_TILE_BLACK_G + Consts.DELTA_TILE_G,
+                        Consts.BASE_TILE_BLACK_G + Consts.DELTA_TILE_G,  //  podświetlanie czarnych kafelków
                         Consts.BASE_TILE_BLACK_B + Consts.DELTA_TILE_B));
             }
-            
+            t.addEventHandler(MouseEvent.MOUSE_CLICKED, moveFigureEvent);  // dodanie do podświetlonych ruchów 'przycisku'
+
         }
 
     };
