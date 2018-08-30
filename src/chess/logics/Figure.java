@@ -20,6 +20,12 @@ import java.util.List;
 
 public abstract class Figure implements MoveValidator {
 
+    public Tile field; //Tile to button odpowiadajacy temu pionkowi
+    public Point currentPosition;  //obecny x, y
+    public FigureType figureType; //typ figury np. BISHOP
+    public Owner owner; //BLACK_PLAYER lub WHITE_PLAYER
+    public GameState gameState;
+
     public Figure(int x, int y, FigureType figureType, GameState gameState, Owner owner){
         this.currentPosition = new Point(x, y);
         this.figureType = figureType;
@@ -32,8 +38,6 @@ public abstract class Figure implements MoveValidator {
 
         try {
             String imageDir = System.getProperty("user.dir") + "/assets/" + figureType.toString() + "_" + owner.toString() + ".png";
-            System.out.println("Image dir for this figure is: " + imageDir);
-
             Image img = new Image(new FileInputStream(imageDir));
             this.field.setFill(new ImagePattern(img));
         } catch (FileNotFoundException e) {
@@ -42,11 +46,6 @@ public abstract class Figure implements MoveValidator {
         }
     }
 
-    public Tile field; //Tile to button odpowiadajacy temu pionkowi
-    public Point currentPosition;  //obecny x, y
-    public FigureType figureType; //typ figury np. BISHOP
-    public Owner owner; //BLACK_PLAYER lub WHITE_PLAYER
-    public GameState gameState;
 
     protected void introduceYourself() {
         System.out.println("My figure type is: " + figureType + " and my XY is "

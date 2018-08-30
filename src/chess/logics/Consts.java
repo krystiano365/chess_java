@@ -14,9 +14,9 @@ public class Consts {
     public static final int BASE_TILE_BLACK_G = 0;
     public static final int BASE_TILE_BLACK_B = 0;
 
-    public static final int DELTA_TILE_R = 50;
-    public static final int DELTA_TILE_G = 50;
-    public static final int DELTA_TILE_B = 50;
+    public static final int DELTA_TILE_R = 40;
+    public static final int DELTA_TILE_G = 40;
+    public static final int DELTA_TILE_B = 40;
 
     public static final int BASE_TILE_WHITE_R = 255;
     public static final int BASE_TILE_WHITE_G = 255;

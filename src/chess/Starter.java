@@ -1,5 +1,6 @@
 package chess;
 
+import chess.logics.Consts;
 import chess.logics.GameState;
 import javafx.application.Application;
 import javafx.stage.Stage;
@@ -17,7 +18,6 @@ public class Starter extends Application {
     public void start(Stage primaryStage) {
 
         System.out.println("Start");
-
         primaryStage.setTitle("Krystian-Chess");
         primaryStage.setResizable(false);
         primaryStage.setScene(gameState.startScreen(primaryStage));

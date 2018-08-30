@@ -48,16 +48,15 @@ public class GameState {
     }
 
     public Scene startScreen(Stage window) {
-        pane.setPrefSize(Consts.START_BUTTON_WIDTH, Consts.START_BUTTON_HEIGHT);
 
         Scene startScreen = new Scene(pane, Consts.WINDOW_WIDTH, Consts.WINDOW_HEIGHT);
 
-        startButton = new Button();
-        startButton.setText("START THE GAME");
-        startButton.setPrefSize(Consts.START_BUTTON_WIDTH, Consts.START_BUTTON_HEIGHT);
-        startButton.setLayoutX(Consts.WINDOW_WIDTH / 2); //fixme lespze centrowanie
-        startButton.setLayoutY(Consts.WINDOW_HEIGHT / 2);
-        startButton.setOnAction(event -> handleButton(event, window));
+//        startButton = new Button();
+//        startButton.setText("START THE GAME");
+//        startButton.setPrefSize(Consts.START_BUTTON_WIDTH, Consts.START_BUTTON_HEIGHT);
+//        startButton.setLayoutX(Consts.WINDOW_WIDTH / 2); //fixme lespze centrowanie
+//        startButton.setLayoutY(Consts.WINDOW_HEIGHT / 2);
+//        startButton.setOnAction(event -> handleButton(event, window));
 
 //        FIXME To dziala, ale nie potrzebujemy na razie tekstu
 //        Text title = new Text("offline chess");
@@ -77,7 +76,7 @@ public class GameState {
         Rook rook_black = new Rook(0, 7, Owner.BLACK_PLAYER, this);
         figures.add(rook_black);
 
-        Rook rook_white = new Rook(7, 7, Owner.WHITE_PLAYER, this);
+        Rook rook_white = new Rook(7, 0, Owner.WHITE_PLAYER, this);
         figures.add(rook_white);
 
         startScreen.addEventHandler(MouseEvent.MOUSE_CLICKED, rightClickMouseHandler);
