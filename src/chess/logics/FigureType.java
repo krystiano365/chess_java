@@ -3,5 +3,6 @@ package chess.logics;
 public enum FigureType {
     BISHOP,
     QUEEN,
-    KING
+    KING,
+    ROOK
 }

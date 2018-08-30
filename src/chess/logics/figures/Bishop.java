@@ -20,43 +20,8 @@ import java.util.List;
  */
 public class Bishop extends Figure {
 
-    public EventHandler<MouseEvent> figureMouseEvent = (clickEvent) -> {
-        System.out.println("Just clicked " + figureType);
-
-        gameState.normalColorTiles();
-        this.gameState.clickedSomeFigure = true;
-
-        int clickX = (int) (clickEvent.getX() / Consts.TILE_SIZE); //x, y w kafelkach (0-8) miejsca w ktore kliknieto
-        int clickY = (int) (clickEvent.getY() / Consts.TILE_SIZE);
-
-        Point clickedPoint = new Point(clickX, clickY);
-        List<Point> moves = getPossibleMoves(clickedPoint);
-
-        for(Point p : moves){
-            System.out.println("Possible: " + p.x + " " + p.y);
-            this.gameState.mapTiles[p.x][p.y].setFill(Color.rgb(0, 100, 0));
-        }
-
-    };
-
     public Bishop(int x, int y, Owner owner, GameState gameState) {
-        this.currentPosition = new Point(x, y);
-        this.figureType = FigureType.BISHOP;
-        this.introduceYourself();
-        this.owner = owner;
-        this.gameState = gameState;
-        this.field = new Tile(currentPosition.x , currentPosition.y);
-
-        this.field.addEventHandler(MouseEvent.MOUSE_CLICKED, figureMouseEvent); //dodanie obslugi inputu tego klawisza
-        this.gameState.pane.getChildren().add(this.field); //dodanie tego klawisza do jakiejs petli renderujacej (cos w tym stylu, to sprawia ze jest wyswietlane)
-
-        try {
-            Image img = new Image(new FileInputStream(System.getProperty("user.dir") + "/assets/knight.png"));
-            this.field.setFill(new ImagePattern(img));
-        } catch (FileNotFoundException e) {
-            System.out.println("Nie znaleziono pliku!");
-            e.printStackTrace();
-        }
+        super(x, y, FigureType.BISHOP, gameState, owner);
     }
 
     //szachownica 0,0 to lewy GORNY rog, os x idzie w prawo, os y idzie w dol

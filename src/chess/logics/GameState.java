@@ -1,6 +1,7 @@
 package chess.logics;
 
 import chess.logics.figures.Bishop;
+import chess.logics.figures.Rook;
 import chess.ui.Tile;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -8,9 +9,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
-import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
-import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 import java.util.ArrayList;
@@ -46,7 +44,7 @@ public class GameState {
 
         for (int i = 0; i < Consts.MAP_WIDTH; i++)
             for (int j = 0; j < Consts.MAP_HEIGHT; j++)
-                this.mapTiles[i][j].setMapFill();
+                this.mapTiles[i][j].setDefaultMapFill();
     }
 
     public Scene startScreen(Stage window) {
@@ -70,21 +68,17 @@ public class GameState {
 //        pane.getChildren().addAll(title, startButton);
 
 
-        Bishop bishop_2 = new Bishop(3, 6, Owner.BLACK_PLAYER, this);
+        Bishop bishop_2 = new Bishop(3, 3, Owner.BLACK_PLAYER, this);
         figures.add(bishop_2);
 
         Bishop bishop = new Bishop(0, 0, Owner.BLACK_PLAYER, this);
         figures.add(bishop);
 
+        Rook rook_black = new Rook(0, 7, Owner.BLACK_PLAYER, this);
+        figures.add(rook_black);
 
-//        pane.setPrefSize(Consts.WINDOW_WIDTH, Consts.WINDOW_HEIGHT);
-//        EventHandler<MouseEvent> mouseClick = (clickEvent) -> {
-//            int x = (int)clickEvent.getX();
-//            int y = (int)clickEvent.getY();
-//            int i = 0, j = 0;
-//        };
-//        Scene gameScreen = new Scene(pane, Consts.WINDOW_WIDTH, Consts.WINDOW_HEIGHT);
-//        gameScreen.addEventHandler(MouseEvent.MOUSE_CLICKED, mouseClick);
+        Rook rook_white = new Rook(7, 7, Owner.WHITE_PLAYER, this);
+        figures.add(rook_white);
 
         startScreen.addEventHandler(MouseEvent.MOUSE_CLICKED, rightClickMouseHandler);
 
