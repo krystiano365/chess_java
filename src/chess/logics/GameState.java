@@ -33,7 +33,7 @@ public class GameState {
             for (int j = 0; j < Consts.MAP_HEIGHT; j++) {
                 Tile tile = new Tile(i, j);
                 pane.getChildren().add(tile);
-                tile.addEventHandler(MouseEvent.MOUSE_CLICKED, mapTileMouseHandler);
+//                tile.addEventHandler(MouseEvent.MOUSE_CLICKED, mapTileMouseHandler);
                 mapTiles[i][j] = tile;
             }
         }
@@ -88,19 +88,22 @@ public class GameState {
     public EventHandler<MouseEvent> rightClickMouseHandler = (clickEvent) -> {
         if (clickEvent.getButton().ordinal() == 3) {
             normalColorTiles();
+            if(clickedSomeFigure) {
+                moves.clear();
+            }
         }
     };
 
-    public EventHandler<MouseEvent> mapTileMouseHandler = (clickEvent) -> {
-
-        int clickX = (int) (clickEvent.getX() / Consts.TILE_SIZE); //x, y w kafelkach (0-8) miejsca w ktore kliknieto
-        int clickY = (int) (clickEvent.getY() / Consts.TILE_SIZE);
-
-        Tile t = mapTiles[clickX][clickY];
-        System.out.println("CLICK EVENT COORDINATES: Clicked X Y " + clickX + " " + clickY);
-        System.out.println("FOUND TILE COORDINATES: " + t.getX() + " " + t.getY());
-
-    };
+//    public EventHandler<MouseEvent> mapTileMouseHandler = (clickEvent) -> {
+//
+//        int clickX = (int) (clickEvent.getX() / Consts.TILE_SIZE); //x, y w kafelkach (0-8) miejsca w ktore kliknieto
+//        int clickY = (int) (clickEvent.getY() / Consts.TILE_SIZE);
+//
+//        Tile t = mapTiles[clickX][clickY];
+//        System.out.println("CLICK EVENT COORDINATES: Clicked X Y " + clickX + " " + clickY);
+//        System.out.println("FOUND TILE COORDINATES: " + t.getX() + " " + t.getY());
+//
+//    };
 
     private void handleButton(ActionEvent event, Stage window) {
         if (event.getSource() == startButton) {
