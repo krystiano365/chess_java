@@ -7,6 +7,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
@@ -16,7 +17,8 @@ import java.util.List;
 
 public class GameState {
 
-    public boolean clickedSomeFigure;
+    public Owner currentPlayer;
+    public Figure currentlyClickedFigure;
 
     public GameState() {
         createBoard();
@@ -33,7 +35,7 @@ public class GameState {
             for (int j = 0; j < Consts.MAP_HEIGHT; j++) {
                 Tile tile = new Tile(i, j);
                 pane.getChildren().add(tile);
-//                tile.addEventHandler(MouseEvent.MOUSE_CLICKED, mapTileMouseHandler);
+                tile.addEventHandler(MouseEvent.MOUSE_CLICKED, mapTileMouseHandler);
                 mapTiles[i][j] = tile;
             }
         }
@@ -41,7 +43,6 @@ public class GameState {
 
     public void normalColorTiles() {
 
-        clickedSomeFigure = false;
 
         for (int i = 0; i < Consts.MAP_WIDTH; i++)
             for (int j = 0; j < Consts.MAP_HEIGHT; j++)
@@ -49,6 +50,8 @@ public class GameState {
     }
 
     public Scene startScreen(Stage window) {
+
+        currentPlayer = Owner.WHITE_PLAYER;
 
         Scene startScreen = new Scene(pane, Consts.WINDOW_WIDTH, Consts.WINDOW_HEIGHT);
 
@@ -80,30 +83,54 @@ public class GameState {
         Rook rook_white = new Rook(7, 0, Owner.WHITE_PLAYER, this);
         figures.add(rook_white);
 
-        startScreen.addEventHandler(MouseEvent.MOUSE_CLICKED, rightClickMouseHandler);
-
         return startScreen;
     }
 
-    public EventHandler<MouseEvent> rightClickMouseHandler = (clickEvent) -> {
-        if (clickEvent.getButton().ordinal() == 3) {
+    public EventHandler<MouseEvent> mapTileMouseHandler = (clickEvent) -> {
+
+        if (clickEvent.getButton() == MouseButton.SECONDARY) {
             normalColorTiles();
-            if(clickedSomeFigure) {
+            if (currentlyClickedFigure != null) {
                 moves.clear();
             }
+            return;
         }
-    };
 
-//    public EventHandler<MouseEvent> mapTileMouseHandler = (clickEvent) -> {
-//
-//        int clickX = (int) (clickEvent.getX() / Consts.TILE_SIZE); //x, y w kafelkach (0-8) miejsca w ktore kliknieto
-//        int clickY = (int) (clickEvent.getY() / Consts.TILE_SIZE);
-//
-//        Tile t = mapTiles[clickX][clickY];
-//        System.out.println("CLICK EVENT COORDINATES: Clicked X Y " + clickX + " " + clickY);
-//        System.out.println("FOUND TILE COORDINATES: " + t.getX() + " " + t.getY());
-//
-//    };
+        int clickX = (int) (clickEvent.getX() / Consts.TILE_SIZE); //x, y w kafelkach (0-8) miejsca w ktore kliknieto
+        int clickY = (int) (clickEvent.getY() / Consts.TILE_SIZE);
+
+        Tile t = mapTiles[clickX][clickY];
+        System.out.println("CLICK EVENT COORDINATES: Clicked X Y " + clickX + " " + clickY);
+        System.out.println("FOUND TILE COORDINATES: " + t.getX() + " " + t.getY());
+
+        boolean moveAllowed = false;
+
+        if (currentlyClickedFigure != null) {
+
+            for (Point p : moves) {
+
+                if (p.x == clickX && p.y == clickY ) {
+                    moveAllowed = true;
+                }
+
+            }
+
+            if (moveAllowed) {
+                currentlyClickedFigure.field.setX(clickX * Consts.TILE_SIZE);
+                currentlyClickedFigure.field.setY(clickY * Consts.TILE_SIZE);
+                currentlyClickedFigure.currentPosition.x = clickX;
+                currentlyClickedFigure.currentPosition.y = clickY;
+                currentPlayer = currentPlayer == Owner.WHITE_PLAYER ? Owner.BLACK_PLAYER : Owner.WHITE_PLAYER;
+            }
+
+            System.out.println("Setting to null");
+            currentlyClickedFigure = null;
+            normalColorTiles();
+            moves.clear();
+
+        }
+
+    };
 
     private void handleButton(ActionEvent event, Stage window) {
         if (event.getSource() == startButton) {

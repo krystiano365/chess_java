@@ -3,14 +3,12 @@ package chess.logics;
 import chess.ui.Tile;
 import javafx.event.EventHandler;
 import javafx.scene.image.Image;
-import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.util.List;
 
 //https://stackoverflow.com/questions/3344816/when-and-why-to-use-abstract-classes-methods
 //dziedziczyc mozna zawsze, chyba ze jest keyword >final< przed >class<
@@ -52,47 +50,49 @@ public abstract class Figure implements MoveValidator {
                 + currentPosition.x + " " + currentPosition.y);
     }
 
-    public EventHandler<MouseEvent> moveFigureEvent = (clickEvent) -> {
-        int clickX = (int) (clickEvent.getX() / Consts.TILE_SIZE);
-        int clickY = (int) (clickEvent.getY() / Consts.TILE_SIZE);
-
-        for (Point p : gameState.moves){
-
-            if (p.x == clickX && p.y == clickY && clickEvent.getButton() == MouseButton.PRIMARY){
-                this.field.setX(clickX * Consts.TILE_SIZE);
-                this.field.setY(clickY * Consts.TILE_SIZE);
-                this.currentPosition.x = clickX;
-                this.currentPosition.y = clickY;
-                gameState.normalColorTiles();
-                gameState.moves.clear();
-                gameState.clickedSomeFigure = false;
-                break;
-            }
-        }
-
-    };
-
-
     public EventHandler<MouseEvent> figureMouseEvent = (clickEvent) -> {
-        System.out.println("Just clicked " + figureType);
+        System.out.println("Just clicked (this) " + figureType + " " + owner);
 
-        if(this.gameState.clickedSomeFigure){
+        boolean killedThisFigure = false;
+
+        if(gameState.currentlyClickedFigure != null){
+            System.out.println("Clicked before (gamesState.currentlyClickedFigure): " + gameState.currentlyClickedFigure.owner);
+
+            if(gameState.currentlyClickedFigure.owner != this.owner) {
+                for (Point p : gameState.moves){
+
+                    if (p.x == this.currentPosition.x && p.y == this.currentPosition.y){
+                        this.gameState.pane.getChildren().remove(this.field);
+                        System.out.println("killing this figure");
+
+                        gameState.currentlyClickedFigure.field.setX(p.x * Consts.TILE_SIZE);
+                        gameState.currentlyClickedFigure.field.setY(p.y * Consts.TILE_SIZE);
+                        gameState.currentlyClickedFigure.currentPosition.x = p.x;
+                        gameState.currentlyClickedFigure.currentPosition.y = p.y;
+                        killedThisFigure = true;
+
+                        gameState.currentPlayer = gameState.currentPlayer == Owner.WHITE_PLAYER ? Owner.BLACK_PLAYER : Owner.WHITE_PLAYER;
+                    }
+                }
+            }
             gameState.normalColorTiles();
             gameState.moves.clear();
+
         }
 
-        this.gameState.clickedSomeFigure = true;
+        if(killedThisFigure || (gameState.currentPlayer != this.owner))
+            return;
+
+        gameState.currentlyClickedFigure = this;
 
         int clickX = (int) (clickEvent.getX() / Consts.TILE_SIZE); //x, y w kafelkach (0-8) miejsca w ktore kliknieto
         int clickY = (int) (clickEvent.getY() / Consts.TILE_SIZE);
 
         Point clickedPoint = new Point(clickX, clickY);
         gameState.moves = getPossibleMoves(clickedPoint);
-
         for(Point p : gameState.moves) {
-            System.out.println("Possible: " + p.x + " " + p.y);
-            Tile t = this.gameState.mapTiles[p.x][p.y];
-            t.addEventHandler(MouseEvent.MOUSE_CLICKED, moveFigureEvent);  // dodanie do podświetlonych ruchów 'przycisku'
+//            System.out.println("Possible: " + p.x + " " + p.y);
+            Tile t = gameState.mapTiles[p.x][p.y];
 
             if (t.isWhite()) {
                 t.setFill(Color.rgb(
