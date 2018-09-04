@@ -61,7 +61,7 @@ public class GameState {
 //        startButton.setLayoutX(Consts.WINDOW_WIDTH / 2); //fixme lespze centrowanie
 //        startButton.setLayoutY(Consts.WINDOW_HEIGHT / 2);
 //        startButton.setOnAction(event -> handleButton(event, window));
-
+//
 //        FIXME To dziala, ale nie potrzebujemy na razie tekstu
 //        Text title = new Text("offline chess");
 //        title.setFont(Font.font("verdana", FontWeight.BOLD, 40));
@@ -71,17 +71,31 @@ public class GameState {
 //        pane.getChildren().addAll(title, startButton);
 
 
-        Bishop bishop_2 = new Bishop(3, 3, Owner.BLACK_PLAYER, this);
-        figures.add(bishop_2);
+        Bishop bishop_white_1 = new Bishop(2, 7, Owner.WHITE_PLAYER, this);
+        figures.add(bishop_white_1);
 
-        Bishop bishop = new Bishop(0, 0, Owner.BLACK_PLAYER, this);
-        figures.add(bishop);
+        Bishop bishop_white_2 = new Bishop(5, 7, Owner.WHITE_PLAYER, this);
+        figures.add(bishop_white_2);
 
-        Rook rook_black = new Rook(0, 7, Owner.BLACK_PLAYER, this);
-        figures.add(rook_black);
+        Rook rook_white_1 = new Rook(7, 7, Owner.WHITE_PLAYER, this);
+        figures.add(rook_white_1);
 
-        Rook rook_white = new Rook(7, 0, Owner.WHITE_PLAYER, this);
-        figures.add(rook_white);
+        Rook rook_white_2 = new Rook(0, 7, Owner.WHITE_PLAYER, this);
+        figures.add(rook_white_2);
+
+
+
+        Bishop bishop_black_1 = new Bishop(2, 0, Owner.BLACK_PLAYER, this);
+        figures.add(bishop_black_1);
+
+        Bishop bishop_black_2 = new Bishop(5, 0, Owner.BLACK_PLAYER, this);
+        figures.add(bishop_black_2);
+
+        Rook rook_black_1 = new Rook(0, 0, Owner.BLACK_PLAYER, this);
+        figures.add(rook_black_1);
+
+        Rook rook_black_2 = new Rook(7, 0, Owner.BLACK_PLAYER, this);
+        figures.add(rook_black_2);
 
         return startScreen;
     }
@@ -92,6 +106,7 @@ public class GameState {
             normalColorTiles();
             if (currentlyClickedFigure != null) {
                 moves.clear();
+                currentlyClickedFigure = null;
             }
             return;
         }
@@ -101,7 +116,7 @@ public class GameState {
 
         Tile t = mapTiles[clickX][clickY];
         System.out.println("CLICK EVENT COORDINATES: Clicked X Y " + clickX + " " + clickY);
-        System.out.println("FOUND TILE COORDINATES: " + t.getX() + " " + t.getY());
+        System.out.println("TILE OCCUPIED?: " + t.isOccupied);
 
         boolean moveAllowed = false;
 
@@ -118,12 +133,21 @@ public class GameState {
             if (moveAllowed) {
                 currentlyClickedFigure.field.setX(clickX * Consts.TILE_SIZE);
                 currentlyClickedFigure.field.setY(clickY * Consts.TILE_SIZE);
+                mapTiles[currentlyClickedFigure.currentPosition.x][currentlyClickedFigure.currentPosition.y].isOccupied = false;
                 currentlyClickedFigure.currentPosition.x = clickX;
                 currentlyClickedFigure.currentPosition.y = clickY;
+                mapTiles[currentlyClickedFigure.currentPosition.x][currentlyClickedFigure.currentPosition.y].isOccupied = true;
                 currentPlayer = currentPlayer == Owner.WHITE_PLAYER ? Owner.BLACK_PLAYER : Owner.WHITE_PLAYER;
             }
+//
+//            for(int x = 0; x < 8; x++){
+//                System.out.println("\n");
+//                for(int y = 0; y < 8; y++){
+//                    System.out.printf("");
+//
+//                }
+//            }
 
-            System.out.println("Setting to null");
             currentlyClickedFigure = null;
             normalColorTiles();
             moves.clear();

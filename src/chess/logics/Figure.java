@@ -27,9 +27,11 @@ public abstract class Figure implements MoveValidator {
     public Figure(int x, int y, FigureType figureType, GameState gameState, Owner owner){
         this.currentPosition = new Point(x, y);
         this.figureType = figureType;
-        this.introduceYourself();
         this.owner = owner;
         this.gameState = gameState;
+
+        gameState.mapTiles[x][y].isOccupied = true;  // kafelek tej figury jest zajęty
+
         field = new Tile(currentPosition.x , currentPosition.y);
         field.addEventHandler(MouseEvent.MOUSE_CLICKED, figureMouseEvent); //dodanie obslugi inputu tego klawisza
         this.gameState.pane.getChildren().add(field); //dodanie tego klawisza do jakiejs petli renderujacej (cos w tym stylu, to sprawia ze jest wyswietlane)
@@ -45,17 +47,13 @@ public abstract class Figure implements MoveValidator {
     }
 
 
-    protected void introduceYourself() {
-        System.out.println("My figure type is: " + figureType + " and my XY is "
-                + currentPosition.x + " " + currentPosition.y);
-    }
 
     public EventHandler<MouseEvent> figureMouseEvent = (clickEvent) -> {
         System.out.println("Just clicked (this) " + figureType + " " + owner);
 
         boolean killedThisFigure = false;
 
-        if(gameState.currentlyClickedFigure != null){
+        if(gameState.currentlyClickedFigure != null){  //  jeśli
             System.out.println("Clicked before (gamesState.currentlyClickedFigure): " + gameState.currentlyClickedFigure.owner);
 
             if(gameState.currentlyClickedFigure.owner != this.owner) {
@@ -91,25 +89,25 @@ public abstract class Figure implements MoveValidator {
         Point clickedPoint = new Point(clickX, clickY);
         gameState.moves = getPossibleMoves(clickedPoint);
         for(Point p : gameState.moves) {
-//            System.out.println("Possible: " + p.x + " " + p.y);
             Tile t = gameState.mapTiles[p.x][p.y];
-
-            if (t.isWhite()) {
-                t.setFill(Color.rgb(
-                        Consts.BASE_TILE_WHITE_R - Consts.DELTA_TILE_R,
-                        Consts.BASE_TILE_WHITE_G - Consts.DELTA_TILE_G,  //  podświetlanie białych kafelków
-                        Consts.BASE_TILE_WHITE_B - Consts.DELTA_TILE_B));
-
-            } else {
-                t.setFill(Color.rgb(
-                        Consts.BASE_TILE_BLACK_R - Consts.DELTA_TILE_R,
-                        Consts.BASE_TILE_BLACK_G + Consts.DELTA_TILE_G,  //  podświetlanie czarnych kafelków
-                        Consts.BASE_TILE_BLACK_B + Consts.DELTA_TILE_B));
-            }
-
-
+            highlightTile(t);
         }
 
     };
+
+    private void highlightTile(Tile t){
+        if (t.isWhite()) {
+            t.setFill(Color.rgb(
+                    Consts.BASE_TILE_WHITE_R - Consts.DELTA_TILE_R,
+                    Consts.BASE_TILE_WHITE_G - Consts.DELTA_TILE_G,  //  podświetlanie białych kafelków
+                    Consts.BASE_TILE_WHITE_B - Consts.DELTA_TILE_B));
+
+        } else {
+            t.setFill(Color.rgb(
+                    Consts.BASE_TILE_BLACK_R - Consts.DELTA_TILE_R,
+                    Consts.BASE_TILE_BLACK_G + Consts.DELTA_TILE_G,  //  podświetlanie czarnych kafelków
+                    Consts.BASE_TILE_BLACK_B + Consts.DELTA_TILE_B));
+        }
+    }
 
 }
