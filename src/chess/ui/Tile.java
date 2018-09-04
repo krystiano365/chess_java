@@ -1,13 +1,15 @@
 package chess.ui;
 
 import chess.logics.Consts;
+import chess.logics.Owner;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
 //https://stackoverflow.com/questions/22848829/how-do-i-add-an-image-inside-a-rectangle-or-a-circle-in-javafx
 public class Tile extends Rectangle {
 
-    public boolean isOccupied;
+
+    public Owner figureColour;
 
     //x, y to piksele
     public Tile(int x, int y) {
@@ -16,7 +18,7 @@ public class Tile extends Rectangle {
         setX(x * Consts.TILE_SIZE);
         setY(y * Consts.TILE_SIZE);
         setDefaultMapFill();
-        isOccupied = false;
+        figureColour = Owner.NONE;
     }
 
     public void setDefaultMapFill(){

@@ -116,7 +116,7 @@ public class GameState {
 
         Tile t = mapTiles[clickX][clickY];
         System.out.println("CLICK EVENT COORDINATES: Clicked X Y " + clickX + " " + clickY);
-        System.out.println("TILE OCCUPIED?: " + t.isOccupied);
+        System.out.println("FIGURE COLOUR?: " + t.figureColour);
 
         boolean moveAllowed = false;
 
@@ -133,20 +133,12 @@ public class GameState {
             if (moveAllowed) {
                 currentlyClickedFigure.field.setX(clickX * Consts.TILE_SIZE);
                 currentlyClickedFigure.field.setY(clickY * Consts.TILE_SIZE);
-                mapTiles[currentlyClickedFigure.currentPosition.x][currentlyClickedFigure.currentPosition.y].isOccupied = false;
+                mapTiles[currentlyClickedFigure.currentPosition.x][currentlyClickedFigure.currentPosition.y].figureColour = Owner.NONE;
                 currentlyClickedFigure.currentPosition.x = clickX;
                 currentlyClickedFigure.currentPosition.y = clickY;
-                mapTiles[currentlyClickedFigure.currentPosition.x][currentlyClickedFigure.currentPosition.y].isOccupied = true;
+                mapTiles[currentlyClickedFigure.currentPosition.x][currentlyClickedFigure.currentPosition.y].figureColour = currentlyClickedFigure.owner;
                 currentPlayer = currentPlayer == Owner.WHITE_PLAYER ? Owner.BLACK_PLAYER : Owner.WHITE_PLAYER;
             }
-//
-//            for(int x = 0; x < 8; x++){
-//                System.out.println("\n");
-//                for(int y = 0; y < 8; y++){
-//                    System.out.printf("");
-//
-//                }
-//            }
 
             currentlyClickedFigure = null;
             normalColorTiles();

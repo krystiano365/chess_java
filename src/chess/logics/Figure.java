@@ -9,6 +9,7 @@ import javafx.scene.paint.ImagePattern;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.util.List;
 
 //https://stackoverflow.com/questions/3344816/when-and-why-to-use-abstract-classes-methods
 //dziedziczyc mozna zawsze, chyba ze jest keyword >final< przed >class<
@@ -30,7 +31,7 @@ public abstract class Figure implements MoveValidator {
         this.owner = owner;
         this.gameState = gameState;
 
-        gameState.mapTiles[x][y].isOccupied = true;  // kafelek tej figury jest zajęty
+        gameState.mapTiles[x][y].figureColour = this.owner;   // określenie właściciela kafelka na którym stoi TA figura
 
         field = new Tile(currentPosition.x , currentPosition.y);
         field.addEventHandler(MouseEvent.MOUSE_CLICKED, figureMouseEvent); //dodanie obslugi inputu tego klawisza
@@ -53,7 +54,12 @@ public abstract class Figure implements MoveValidator {
 
         boolean killedThisFigure = false;
 
-        if(gameState.currentlyClickedFigure != null){  //  jeśli
+        int clickX = (int) (clickEvent.getX() / Consts.TILE_SIZE); //x, y w kafelkach (0-8) miejsca w ktore kliknieto
+        int clickY = (int) (clickEvent.getY() / Consts.TILE_SIZE);
+
+        System.out.println("FIGURE COLOUR?: " + gameState.mapTiles[clickX][clickY].figureColour);
+
+        if(gameState.currentlyClickedFigure != null){
             System.out.println("Clicked before (gamesState.currentlyClickedFigure): " + gameState.currentlyClickedFigure.owner);
 
             if(gameState.currentlyClickedFigure.owner != this.owner) {
@@ -61,12 +67,17 @@ public abstract class Figure implements MoveValidator {
 
                     if (p.x == this.currentPosition.x && p.y == this.currentPosition.y){
                         this.gameState.pane.getChildren().remove(this.field);
-                        System.out.println("killing this figure");
 
                         gameState.currentlyClickedFigure.field.setX(p.x * Consts.TILE_SIZE);
                         gameState.currentlyClickedFigure.field.setY(p.y * Consts.TILE_SIZE);
-                        gameState.currentlyClickedFigure.currentPosition.x = p.x;
-                        gameState.currentlyClickedFigure.currentPosition.y = p.y;
+
+                        int currentX = gameState.currentlyClickedFigure.currentPosition.x;
+                        int currentY = gameState.currentlyClickedFigure.currentPosition.y;
+                        gameState.mapTiles[currentX][currentY].figureColour = Owner.NONE;       // setting back Tile's properties
+                        currentX = gameState.currentlyClickedFigure.currentPosition.x = p.x;    // changing current position of the figure after move
+                        currentY = gameState.currentlyClickedFigure.currentPosition.y = p.y;
+                        gameState.mapTiles[currentX][currentY].figureColour = gameState.currentlyClickedFigure.owner;    // setting current Tile's properties
+
                         killedThisFigure = true;
 
                         gameState.currentPlayer = gameState.currentPlayer == Owner.WHITE_PLAYER ? Owner.BLACK_PLAYER : Owner.WHITE_PLAYER;
@@ -83,8 +94,7 @@ public abstract class Figure implements MoveValidator {
 
         gameState.currentlyClickedFigure = this;
 
-        int clickX = (int) (clickEvent.getX() / Consts.TILE_SIZE); //x, y w kafelkach (0-8) miejsca w ktore kliknieto
-        int clickY = (int) (clickEvent.getY() / Consts.TILE_SIZE);
+
 
         Point clickedPoint = new Point(clickX, clickY);
         gameState.moves = getPossibleMoves(clickedPoint);
@@ -110,4 +120,16 @@ public abstract class Figure implements MoveValidator {
         }
     }
 
+
+    public boolean validateMoves(int x, int y, List<Point> points) {
+        if (gameState.mapTiles[x][y].figureColour == Owner.NONE) {
+            Point p = new Point(x, y);
+            points.add(p);
+        } else if (gameState.mapTiles[x][y].figureColour != owner) {
+            Point p = new Point(x, y);
+            points.add(p);
+            return false;
+        } else return false;
+        return true;
+    }
 }
