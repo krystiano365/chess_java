@@ -5,3 +5,4 @@ public enum Owner {
     BLACK_PLAYER,
     NONE
 }
+

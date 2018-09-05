@@ -1,7 +1,6 @@
 package chess.logics;
 
-import chess.logics.figures.Bishop;
-import chess.logics.figures.Rook;
+import chess.logics.figures.*;
 import chess.ui.Tile;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -10,6 +9,7 @@ import javafx.scene.control.Button;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 import java.util.ArrayList;
@@ -34,6 +34,7 @@ public class GameState {
         for (int i = 0; i < Consts.MAP_WIDTH; i++) {
             for (int j = 0; j < Consts.MAP_HEIGHT; j++) {
                 Tile tile = new Tile(i, j);
+                tile.setStroke(Color.BLACK);
                 pane.getChildren().add(tile);
                 tile.addEventHandler(MouseEvent.MOUSE_CLICKED, mapTileMouseHandler);
                 mapTiles[i][j] = tile;
@@ -83,6 +84,15 @@ public class GameState {
         Rook rook_white_2 = new Rook(0, 7, Owner.WHITE_PLAYER, this);
         figures.add(rook_white_2);
 
+        King king_white = new King(4, 7, Owner.WHITE_PLAYER, this);
+        figures.add(king_white);
+
+        Queen queen_white = new Queen(3, 7, Owner.WHITE_PLAYER, this);
+        figures.add(queen_white);
+
+        Pawn pawn_white_1 = new Pawn(0, 6, Owner.WHITE_PLAYER, this);
+        figures.add(pawn_white_1);
+
 
 
         Bishop bishop_black_1 = new Bishop(2, 0, Owner.BLACK_PLAYER, this);
@@ -96,6 +106,12 @@ public class GameState {
 
         Rook rook_black_2 = new Rook(7, 0, Owner.BLACK_PLAYER, this);
         figures.add(rook_black_2);
+
+        King king_black = new King(4, 0, Owner.BLACK_PLAYER, this);
+        figures.add(king_black);
+
+        Queen queen_black = new Queen(3, 0, Owner.BLACK_PLAYER, this);
+        figures.add(queen_black);
 
         return startScreen;
     }
@@ -147,6 +163,15 @@ public class GameState {
         }
 
     };
+
+    public Owner getOpponent(){
+        if (this.currentPlayer == Owner.WHITE_PLAYER) {
+            return Owner.BLACK_PLAYER;
+        } else {
+            return Owner.WHITE_PLAYER;
+        }
+    }
+
 
     private void handleButton(ActionEvent event, Stage window) {
         if (event.getSource() == startButton) {

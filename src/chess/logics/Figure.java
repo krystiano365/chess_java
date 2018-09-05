@@ -121,15 +121,17 @@ public abstract class Figure implements MoveValidator {
     }
 
 
-    public boolean validateMoves(int x, int y, List<Point> points) {
-        if (gameState.mapTiles[x][y].figureColour == Owner.NONE) {
-            Point p = new Point(x, y);
-            points.add(p);
-        } else if (gameState.mapTiles[x][y].figureColour != owner) {
-            Point p = new Point(x, y);
-            points.add(p);
-            return false;
-        } else return false;
+    public boolean validateMove(int x, int y, List<Point> points) {
+        if (x < Consts.MAP_WIDTH && x >= 0 && y < Consts.MAP_HEIGHT && y >= 0) {
+            if (gameState.mapTiles[x][y].figureColour == Owner.NONE) {
+                Point p = new Point(x, y);
+                points.add(p);
+            } else if (gameState.mapTiles[x][y].figureColour != owner) {
+                Point p = new Point(x, y);
+                points.add(p);
+                return false;
+            } else return false;
+        }
         return true;
     }
 }

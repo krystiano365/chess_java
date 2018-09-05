@@ -4,5 +4,7 @@ public enum FigureType {
     BISHOP,
     QUEEN,
     KING,
-    ROOK
+    ROOK,
+    PAWN,
+    KNIGHT
 }
