@@ -4,7 +4,6 @@ import chess.ui.Tile;
 import javafx.event.EventHandler;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
 
 import java.io.FileInputStream;
@@ -19,13 +18,14 @@ import java.util.List;
 
 public abstract class Figure implements MoveValidator {
 
+    public boolean killed;
     public Tile field; //Tile to button odpowiadajacy temu pionkowi
     public Point currentPosition;  //obecny x, y
     public FigureType figureType; //typ figury np. BISHOP
     public Owner owner; //BLACK_PLAYER lub WHITE_PLAYER
     public GameState gameState;
 
-    public Figure(int x, int y, FigureType figureType, GameState gameState, Owner owner){
+    public Figure(int x, int y, FigureType figureType, GameState gameState, Owner owner) {
         this.currentPosition = new Point(x, y);
         this.figureType = figureType;
         this.owner = owner;
@@ -33,7 +33,7 @@ public abstract class Figure implements MoveValidator {
 
         gameState.mapTiles[x][y].figureColour = this.owner;   // określenie właściciela kafelka na którym stoi TA figura
 
-        field = new Tile(currentPosition.x , currentPosition.y);
+        field = new Tile(currentPosition.x, currentPosition.y);
         field.addEventHandler(MouseEvent.MOUSE_CLICKED, figureMouseEvent); //dodanie obslugi inputu tego klawisza
         this.gameState.pane.getChildren().add(field); //dodanie tego klawisza do jakiejs petli renderujacej (cos w tym stylu, to sprawia ze jest wyswietlane)
 
@@ -48,7 +48,6 @@ public abstract class Figure implements MoveValidator {
     }
 
 
-
     public EventHandler<MouseEvent> figureMouseEvent = (clickEvent) -> {
         System.out.println("Just clicked (this) " + figureType + " " + owner);
 
@@ -59,68 +58,90 @@ public abstract class Figure implements MoveValidator {
 
         System.out.println("FIGURE COLOUR?: " + gameState.mapTiles[clickX][clickY].figureColour);
 
-        if(gameState.currentlyClickedFigure != null){
+        if (gameState.currentlyClickedFigure != null) {
             System.out.println("Clicked before (gamesState.currentlyClickedFigure): " + gameState.currentlyClickedFigure.owner);
 
-            if(gameState.currentlyClickedFigure.owner != this.owner) {
-                for (Point p : gameState.moves){
+            if (gameState.currentlyClickedFigure.owner != this.owner) {
+                for (Point p : gameState.moves) {
 
-                    if (p.x == this.currentPosition.x && p.y == this.currentPosition.y){
-                        this.gameState.pane.getChildren().remove(this.field);
+                    if (p.x == this.currentPosition.x && p.y == this.currentPosition.y) {
+
+                        removeTileFromView();
 
                         gameState.currentlyClickedFigure.field.setX(p.x * Consts.TILE_SIZE);
                         gameState.currentlyClickedFigure.field.setY(p.y * Consts.TILE_SIZE);
 
                         int currentX = gameState.currentlyClickedFigure.currentPosition.x;
                         int currentY = gameState.currentlyClickedFigure.currentPosition.y;
+
+
                         gameState.mapTiles[currentX][currentY].figureColour = Owner.NONE;       // setting back Tile's properties
                         currentX = gameState.currentlyClickedFigure.currentPosition.x = p.x;    // changing current position of the figure after move
                         currentY = gameState.currentlyClickedFigure.currentPosition.y = p.y;
                         gameState.mapTiles[currentX][currentY].figureColour = gameState.currentlyClickedFigure.owner;    // setting current Tile's properties
 
+
                         killedThisFigure = true;
+                        killed = true;
 
                         gameState.currentPlayer = gameState.currentPlayer == Owner.WHITE_PLAYER ? Owner.BLACK_PLAYER : Owner.WHITE_PLAYER;
+
                     }
                 }
             }
             gameState.normalColorTiles();
             gameState.moves.clear();
 
+
         }
 
-        if(killedThisFigure || (gameState.currentPlayer != this.owner))
+        if (killedThisFigure || (gameState.currentPlayer != this.owner))
             return;
 
         gameState.currentlyClickedFigure = this;
 
-
-
         Point clickedPoint = new Point(clickX, clickY);
         gameState.moves = getPossibleMoves(clickedPoint);
-        for(Point p : gameState.moves) {
+
+        if (figureType == FigureType.KING) {
+
+            Owner opponent = gameState.getOpponent();
+
+//            int tempX = currentPosition.x;
+//            int tempY = currentPosition.y;
+
+
+            for (Figure f : gameState.figures) {
+                if (f.owner == opponent) {
+                    for (Point possiblePoint : f.getPossibleMoves(f.currentPosition)) {
+                        gameState.moves.removeIf(p -> p.x == possiblePoint.x && possiblePoint.y == p.y);
+//                        }
+                    }
+                    if (gameState.moves.size() == 0) {
+                        //System.exit(0);
+                    }
+                }
+            }
+
+
+//            currentPosition.x = tempX;
+//            currentPosition.y = tempY;
+
+
+
+        }
+
+
+        for (Point p : gameState.moves) {
             Tile t = gameState.mapTiles[p.x][p.y];
-            highlightTile(t);
+            FigureUtils.highlightTile(t, gameState);
         }
 
     };
 
-    private void highlightTile(Tile t){
-        if (t.isWhite()) {
-            t.setFill(Color.rgb(
-                    Consts.BASE_TILE_WHITE_R - Consts.DELTA_TILE_R,
-                    Consts.BASE_TILE_WHITE_G - Consts.DELTA_TILE_G,  //  podświetlanie białych kafelków
-                    Consts.BASE_TILE_WHITE_B - Consts.DELTA_TILE_B));
-
-        } else {
-            t.setFill(Color.rgb(
-                    Consts.BASE_TILE_BLACK_R - Consts.DELTA_TILE_R,
-                    Consts.BASE_TILE_BLACK_G + Consts.DELTA_TILE_G,  //  podświetlanie czarnych kafelków
-                    Consts.BASE_TILE_BLACK_B + Consts.DELTA_TILE_B));
-        }
-        if (t.figureColour == gameState.getOpponent()){
-            t.setFill(Color.INDIANRED);
-        }
+    public void removeTileFromView() {
+        this.gameState.pane.getChildren().remove(this.field);
+        killed = true;
     }
 
 

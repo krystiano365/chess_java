@@ -1,6 +1,5 @@
 package chess.logics;
 
-import chess.logics.figures.*;
 import chess.ui.Tile;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -16,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GameState {
+
 
     public Owner currentPlayer;
     public Figure currentlyClickedFigure;
@@ -73,51 +73,7 @@ public class GameState {
 //        pane.getChildren().addAll(title, startButton);
 
 
-        Bishop bishop_white_1 = new Bishop(2, 7, Owner.WHITE_PLAYER, this);
-        figures.add(bishop_white_1);
-
-        Bishop bishop_white_2 = new Bishop(5, 7, Owner.WHITE_PLAYER, this);
-        figures.add(bishop_white_2);
-
-        Rook rook_white_1 = new Rook(7, 7, Owner.WHITE_PLAYER, this);
-        figures.add(rook_white_1);
-
-        Rook rook_white_2 = new Rook(0, 7, Owner.WHITE_PLAYER, this);
-        figures.add(rook_white_2);
-
-        King king_white = new King(4, 7, Owner.WHITE_PLAYER, this);
-        figures.add(king_white);
-
-        Queen queen_white = new Queen(3, 7, Owner.WHITE_PLAYER, this);
-        figures.add(queen_white);
-
-        for (int x = 0; x < Consts.MAP_WIDTH; x++){
-            figures.add(new Pawn(x, 6, Owner.WHITE_PLAYER, this));
-        }
-
-
-
-        Bishop bishop_black_1 = new Bishop(2, 0, Owner.BLACK_PLAYER, this);
-        figures.add(bishop_black_1);
-
-        Bishop bishop_black_2 = new Bishop(5, 0, Owner.BLACK_PLAYER, this);
-        figures.add(bishop_black_2);
-
-        Rook rook_black_1 = new Rook(0, 0, Owner.BLACK_PLAYER, this);
-        figures.add(rook_black_1);
-
-        Rook rook_black_2 = new Rook(7, 0, Owner.BLACK_PLAYER, this);
-        figures.add(rook_black_2);
-
-        King king_black = new King(4, 0, Owner.BLACK_PLAYER, this);
-        figures.add(king_black);
-
-        Queen queen_black = new Queen(3, 0, Owner.BLACK_PLAYER, this);
-        figures.add(queen_black);
-
-        for (int x = 0; x < Consts.MAP_WIDTH; x++){
-            figures.add(new Pawn(x, 1, Owner.BLACK_PLAYER, this));
-        }
+        figures = GameStateUtils.spawnFigures(this);
 
         return startScreen;
     }
@@ -145,11 +101,9 @@ public class GameState {
         if (currentlyClickedFigure != null) {  // poruszanie się po uprzednim wybraniu figury
 
             for (Point p : moves) {
-
-                if (p.x == clickX && p.y == clickY ) {
+                if (p.x == clickX && p.y == clickY) {
                     moveAllowed = true;
                 }
-
             }
 
             if (moveAllowed) {
@@ -162,18 +116,28 @@ public class GameState {
                 currentPlayer = currentPlayer == Owner.WHITE_PLAYER ? Owner.BLACK_PLAYER : Owner.WHITE_PLAYER;
             }
 
-//            if (pawnEnPassantPoints != null) {
-//                for (Point p : pawnEnPassantPoints){
-//                    if (p.x == clickX && p.y == clickY) {
-//                        for (int i = 0; i < pane.getHeight(); i++){
-//                            pane.getChildren(1)
-//                        }
-//
-//                    }
-//                }
-//
-//                pawnEnPassantPoints.clear();
-//            }
+            if (pawnEnPassantPoints != null) {
+                for (Point p : pawnEnPassantPoints) {
+                    if (p.x == clickX && p.y == clickY) {
+                        //if white, you can en passant only down
+                        System.out.println("checking enPassant");
+                        int en_passant_y = 0;
+                        if (currentPlayer == Owner.WHITE_PLAYER)
+                            en_passant_y = p.y - 1;
+                        else if (currentPlayer == Owner.BLACK_PLAYER)
+                            en_passant_y = p.y + 1;
+
+                        for (Figure figure : figures) {
+                            if (figure.currentPosition.x == p.x && figure.currentPosition.y == en_passant_y) {
+                                figure.removeTileFromView();
+                                break;
+                            }
+                        }
+
+                    }
+                }
+                pawnEnPassantPoints.clear();
+            }
 
             currentlyClickedFigure = null;
             normalColorTiles();
@@ -183,7 +147,7 @@ public class GameState {
 
     };
 
-    public Owner getOpponent(){
+    public Owner getOpponent() {
         if (this.currentPlayer == Owner.WHITE_PLAYER) {
             return Owner.BLACK_PLAYER;
         } else {

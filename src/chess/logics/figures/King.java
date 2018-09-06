@@ -26,6 +26,8 @@ public class King extends Figure {
         validateMove(x - 1, y, points); // left
         validateMove(x - 1, y - 1, points); // up left
 
+
+
         return points;
     }
 }
