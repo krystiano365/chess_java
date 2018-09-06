@@ -19,6 +19,7 @@ public class GameState {
 
     public Owner currentPlayer;
     public Figure currentlyClickedFigure;
+    public List<Point> pawnEnPassantPoints = new ArrayList<>();
 
     public GameState() {
         createBoard();
@@ -90,8 +91,9 @@ public class GameState {
         Queen queen_white = new Queen(3, 7, Owner.WHITE_PLAYER, this);
         figures.add(queen_white);
 
-        Pawn pawn_white_1 = new Pawn(0, 6, Owner.WHITE_PLAYER, this);
-        figures.add(pawn_white_1);
+        for (int x = 0; x < Consts.MAP_WIDTH; x++){
+            figures.add(new Pawn(x, 6, Owner.WHITE_PLAYER, this));
+        }
 
 
 
@@ -112,6 +114,10 @@ public class GameState {
 
         Queen queen_black = new Queen(3, 0, Owner.BLACK_PLAYER, this);
         figures.add(queen_black);
+
+        for (int x = 0; x < Consts.MAP_WIDTH; x++){
+            figures.add(new Pawn(x, 1, Owner.BLACK_PLAYER, this));
+        }
 
         return startScreen;
     }
@@ -136,7 +142,7 @@ public class GameState {
 
         boolean moveAllowed = false;
 
-        if (currentlyClickedFigure != null) {
+        if (currentlyClickedFigure != null) {  // poruszanie się po uprzednim wybraniu figury
 
             for (Point p : moves) {
 
@@ -155,6 +161,19 @@ public class GameState {
                 mapTiles[currentlyClickedFigure.currentPosition.x][currentlyClickedFigure.currentPosition.y].figureColour = currentlyClickedFigure.owner;
                 currentPlayer = currentPlayer == Owner.WHITE_PLAYER ? Owner.BLACK_PLAYER : Owner.WHITE_PLAYER;
             }
+
+//            if (pawnEnPassantPoints != null) {
+//                for (Point p : pawnEnPassantPoints){
+//                    if (p.x == clickX && p.y == clickY) {
+//                        for (int i = 0; i < pane.getHeight(); i++){
+//                            pane.getChildren(1)
+//                        }
+//
+//                    }
+//                }
+//
+//                pawnEnPassantPoints.clear();
+//            }
 
             currentlyClickedFigure = null;
             normalColorTiles();

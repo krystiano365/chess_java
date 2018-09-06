@@ -118,6 +118,9 @@ public abstract class Figure implements MoveValidator {
                     Consts.BASE_TILE_BLACK_G + Consts.DELTA_TILE_G,  //  podświetlanie czarnych kafelków
                     Consts.BASE_TILE_BLACK_B + Consts.DELTA_TILE_B));
         }
+        if (t.figureColour == gameState.getOpponent()){
+            t.setFill(Color.INDIANRED);
+        }
     }
 
 
