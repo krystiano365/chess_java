@@ -1,10 +1,11 @@
-package chess.logics;
+package chess;
 
-import chess.ui.Tile;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
@@ -20,12 +21,13 @@ public class GameState {
     public Owner currentPlayer;
     public Figure currentlyClickedFigure;
     public List<Point> pawnEnPassantPoints = new ArrayList<>();
+    boolean pauseMenuShown = false;
 
     public GameState() {
         createBoard();
     }
 
-    public List<Figure> figures = new ArrayList<>(); //figury
+    public ArrayList<Figure> figures = new ArrayList<>(); //figury
     public Tile[][] mapTiles = new Tile[Consts.MAP_WIDTH][Consts.MAP_HEIGHT]; //kafelki mapy
     public List<Point> moves; // możliwe ruchy
     public Button startButton;
@@ -51,11 +53,32 @@ public class GameState {
                 this.mapTiles[i][j].setDefaultMapFill();
     }
 
+
     public Scene startScreen(Stage window) {
 
         currentPlayer = Owner.WHITE_PLAYER;
 
         Scene startScreen = new Scene(pane, Consts.WINDOW_WIDTH, Consts.WINDOW_HEIGHT);
+
+        GameStateUtils.spawnWhites(this, figures);
+        GameStateUtils.spawnBlacks(this, figures);
+
+
+
+        PauseMenu pauseMenu = new PauseMenu(this);
+
+        startScreen.addEventHandler(KeyEvent.KEY_PRESSED, event -> {
+            if(event.getCode() == KeyCode.ESCAPE) {
+                if(pauseMenuShown) {
+                    pauseMenu.hidePauseMenu();
+                    pauseMenuShown = false;
+                } else {
+                    pauseMenu.showPauseMenu();
+                    pauseMenuShown = true;
+                }
+            }
+        });
+
 
 //        startButton = new Button();
 //        startButton.setText("START THE GAME");
@@ -67,13 +90,9 @@ public class GameState {
 //        FIXME To dziala, ale nie potrzebujemy na razie tekstu
 //        Text title = new Text("offline chess");
 //        title.setFont(Font.font("verdana", FontWeight.BOLD, 40));
+//        title.setFill(Color.WHITE);
 //        title.setX(Consts.WINDOW_HEIGHT / 2 - title.getLayoutBounds().getWidth() / 2);
 //        title.setY(50);
-//
-//        pane.getChildren().addAll(title, startButton);
-
-
-        figures = GameStateUtils.spawnFigures(this);
 
         return startScreen;
     }

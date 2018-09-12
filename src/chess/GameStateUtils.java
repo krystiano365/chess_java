@@ -1,15 +1,11 @@
-package chess.logics;
-
-import chess.logics.figures.*;
+package chess;
 
 import java.util.ArrayList;
 
 public class GameStateUtils {
-    
-    static ArrayList<Figure> spawnFigures(GameState gameState){
 
-        ArrayList<Figure> figures = new ArrayList<>();
-        
+    static void spawnWhites(GameState gameState, ArrayList<Figure> figures) {
+
         Bishop bishop_white_1 = new Bishop(2, 7, Owner.WHITE_PLAYER, gameState);
         figures.add(bishop_white_1);
 
@@ -32,6 +28,10 @@ public class GameStateUtils {
             figures.add(new Pawn(x, 6, Owner.WHITE_PLAYER, gameState));
         }
 
+    }
+
+    static void spawnBlacks(GameState gameState, ArrayList<Figure> figures){
+
         Bishop bishop_black_1 = new Bishop(2, 0, Owner.BLACK_PLAYER, gameState);
         figures.add(bishop_black_1);
 
@@ -53,8 +53,7 @@ public class GameStateUtils {
         for (int x = 0; x < Consts.MAP_WIDTH; x++) {
             figures.add(new Pawn(x, 1, Owner.BLACK_PLAYER, gameState));
         }
-        
-        return figures;
+
     }
     
 }

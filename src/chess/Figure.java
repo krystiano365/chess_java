@@ -1,6 +1,5 @@
-package chess.logics;
+package chess;
 
-import chess.ui.Tile;
 import javafx.event.EventHandler;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;

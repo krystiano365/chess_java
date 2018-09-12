@@ -1,4 +1,4 @@
-package chess.logics;
+package chess;
 
 public enum Owner {
     WHITE_PLAYER,

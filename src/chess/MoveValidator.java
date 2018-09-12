@@ -1,4 +1,4 @@
-package chess.logics;
+package chess;
 
 import java.util.List;
 

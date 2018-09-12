@@ -1,6 +1,4 @@
-package chess.logics.figures;
-
-import chess.logics.*;
+package chess;
 
 import java.util.ArrayList;
 import java.util.List;

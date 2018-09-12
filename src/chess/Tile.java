@@ -1,7 +1,5 @@
-package chess.ui;
+package chess;
 
-import chess.logics.Consts;
-import chess.logics.Owner;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 

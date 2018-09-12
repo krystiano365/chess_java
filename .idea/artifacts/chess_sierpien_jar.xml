@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="chess_sierpien:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/chess_sierpien_jar</output-path>
+    <root id="archive" name="chess_sierpien.jar">
+      <element id="module-output" name="chess_sierpien" />
+    </root>
+  </artifact>
+</component>

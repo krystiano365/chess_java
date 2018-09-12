@@ -1,13 +1,9 @@
 package chess;
 
-import chess.logics.Consts;
-import chess.logics.GameState;
 import javafx.application.Application;
 import javafx.stage.Stage;
 
 public class Starter extends Application {
-
-    private static GameState gameState = new GameState();
 
     public static void main(String... args) {
         System.out.println("In main");
@@ -17,6 +13,7 @@ public class Starter extends Application {
     @Override
     public void start(Stage primaryStage) {
 
+        GameState gameState = new GameState();
         System.out.println("Start");
         primaryStage.setTitle("Krystian-Chess");
         primaryStage.setResizable(false);

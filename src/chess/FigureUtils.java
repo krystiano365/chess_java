@@ -1,6 +1,5 @@
-package chess.logics;
+package chess;
 
-import chess.ui.Tile;
 import javafx.scene.paint.Color;
 
 public class FigureUtils {
