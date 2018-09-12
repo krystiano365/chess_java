@@ -1,6 +1,5 @@
 package chess;
 
-import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -22,6 +21,7 @@ public class GameState {
     public Figure currentlyClickedFigure;
     public List<Point> pawnEnPassantPoints = new ArrayList<>();
     boolean pauseMenuShown = false;
+    boolean kingKilled = !true;
 
     public GameState() {
         createBoard();
@@ -63,36 +63,27 @@ public class GameState {
         GameStateUtils.spawnWhites(this, figures);
         GameStateUtils.spawnBlacks(this, figures);
 
-
-
         PauseMenu pauseMenu = new PauseMenu(this);
 
-        startScreen.addEventHandler(KeyEvent.KEY_PRESSED, event -> {
-            if(event.getCode() == KeyCode.ESCAPE) {
-                if(pauseMenuShown) {
-                    pauseMenu.hidePauseMenu();
-                    pauseMenuShown = false;
-                } else {
-                    pauseMenu.showPauseMenu();
-                    pauseMenuShown = true;
+        if (!kingKilled) {
+            startScreen.addEventHandler(KeyEvent.KEY_PRESSED, event -> {
+                if (event.getCode() == KeyCode.ESCAPE) {
+                    if (pauseMenuShown) {
+                        pauseMenu.hideMenu();
+                        pauseMenuShown = false;
+                    } else {
+                        pauseMenu.showMenu();
+                        pauseMenuShown = true;
+                    }
                 }
-            }
-        });
+            });
+        } else {
+            String winner = getOpponent() == Owner.WHITE_PLAYER ? "WHITES" : "BLACKS";
+            GameOverMenu gameover = new GameOverMenu(this, winner);
+            gameover.showMenu();
+        }
 
 
-//        startButton = new Button();
-//        startButton.setText("START THE GAME");
-//        startButton.setPrefSize(Consts.START_BUTTON_WIDTH, Consts.START_BUTTON_HEIGHT);
-//        startButton.setLayoutX(Consts.WINDOW_WIDTH / 2); //fixme lespze centrowanie
-//        startButton.setLayoutY(Consts.WINDOW_HEIGHT / 2);
-//        startButton.setOnAction(event -> handleButton(event, window));
-//
-//        FIXME To dziala, ale nie potrzebujemy na razie tekstu
-//        Text title = new Text("offline chess");
-//        title.setFont(Font.font("verdana", FontWeight.BOLD, 40));
-//        title.setFill(Color.WHITE);
-//        title.setX(Consts.WINDOW_HEIGHT / 2 - title.getLayoutBounds().getWidth() / 2);
-//        title.setY(50);
 
         return startScreen;
     }
@@ -171,13 +162,6 @@ public class GameState {
             return Owner.BLACK_PLAYER;
         } else {
             return Owner.WHITE_PLAYER;
-        }
-    }
-
-
-    private void handleButton(ActionEvent event, Stage window) {
-        if (event.getSource() == startButton) {
-//            window.setScene(gameScreen());
         }
     }
 
