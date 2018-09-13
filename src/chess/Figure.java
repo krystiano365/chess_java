@@ -73,16 +73,22 @@ public abstract class Figure implements MoveValidator {
                         int currentX = gameState.currentlyClickedFigure.currentPosition.x;
                         int currentY = gameState.currentlyClickedFigure.currentPosition.y;
 
-
                         gameState.mapTiles[currentX][currentY].figureColour = Owner.NONE;       // setting back Tile's properties
+
                         currentX = gameState.currentlyClickedFigure.currentPosition.x = p.x;    // changing current position of the figure after move
                         currentY = gameState.currentlyClickedFigure.currentPosition.y = p.y;
                         gameState.mapTiles[currentX][currentY].figureColour = gameState.currentlyClickedFigure.owner;    // setting current Tile's properties
 
-
                         killedThisFigure = true;
                         killed = true;
 
+
+                        if(figureType == FigureType.KING){
+                            gameState.kingKilled = true;
+                            String winner = gameState.currentPlayer == Owner.WHITE_PLAYER ? "WHITES" : "BLACKS";
+                            GameOverMenu gameover = new GameOverMenu(gameState, winner);
+                            gameover.showMenu();
+                        }
                         gameState.currentPlayer = gameState.currentPlayer == Owner.WHITE_PLAYER ? Owner.BLACK_PLAYER : Owner.WHITE_PLAYER;
 
                     }
@@ -106,28 +112,13 @@ public abstract class Figure implements MoveValidator {
 
             Owner opponent = gameState.getOpponent();
 
-//            int tempX = currentPosition.x;
-//            int tempY = currentPosition.y;
-
-
             for (Figure f : gameState.figures) {
                 if (f.owner == opponent) {
                     for (Point possiblePoint : f.getPossibleMoves(f.currentPosition)) {
                         gameState.moves.removeIf(p -> p.x == possiblePoint.x && possiblePoint.y == p.y);
-//                        }
-                    }
-                    if (gameState.moves.size() == 0) {
-                        //System.exit(0);
                     }
                 }
             }
-
-
-//            currentPosition.x = tempX;
-//            currentPosition.y = tempY;
-
-
-
         }
 
 

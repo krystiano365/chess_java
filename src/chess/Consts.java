@@ -11,7 +11,6 @@ public class Consts {
     public static final int BUTTON_WIDTH = 150;
     public static final int PAUSE_MENU_WIDTH = 200;
     public static final int PAUSE_MENU_HEIGHT = 300;
-    public static final int GAMEOVER_MENU_WIDTH = 200;
     public static final int GAMEOVER_MENU_HEIGHT = 200;
     public static final int pauseWindowUpperBound = WINDOW_HEIGHT/2 - PAUSE_MENU_HEIGHT/2;
     public static final int gameoverWindowUpperBound = WINDOW_HEIGHT/2 - GAMEOVER_MENU_HEIGHT/2;

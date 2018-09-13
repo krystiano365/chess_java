@@ -1,6 +1,7 @@
 package chess;
 
 import javafx.scene.control.Button;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
@@ -49,6 +50,29 @@ public abstract class Menu {
         button.setLayoutX(Consts.WINDOW_WIDTH / 2 - Consts.BUTTON_WIDTH/2);
         button.setLayoutY(menuWindowUpperBound + elementNumberInButtonsRow * spacing);
         return button;
+    }
+
+    public void setExitButtonHandlers(Button exitButton){
+        exitButton.setOnAction(event -> System.exit(0));
+        exitButton.setOnKeyPressed(event -> {
+            if(event.getCode() == KeyCode.ENTER){
+                System.exit(0);
+            }
+        });
+    }
+
+
+    public void setContinueButtonHandlers(Button continueButton){
+        continueButton.setOnAction(event -> {
+            hideMenu();
+            gameState.pauseMenuShown = false;
+        });
+        continueButton.setOnKeyPressed(event -> {
+            if(event.getCode() == KeyCode.ENTER) {
+                hideMenu();
+                gameState.pauseMenuShown = false;
+            }
+        });
     }
 
     public void showMenu() {

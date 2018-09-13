@@ -18,6 +18,12 @@ public class GameStateUtils {
         Rook rook_white_2 = new Rook(0, 7, Owner.WHITE_PLAYER, gameState);
         figures.add(rook_white_2);
 
+        Knight knight_white_1 = new Knight(1, 7, Owner.WHITE_PLAYER, gameState);
+        figures.add(knight_white_1);
+
+        Knight knight_white_2 = new Knight(6, 7, Owner.WHITE_PLAYER, gameState);
+        figures.add(knight_white_2);
+
         King king_white = new King(4, 7, Owner.WHITE_PLAYER, gameState);
         figures.add(king_white);
 
@@ -43,6 +49,12 @@ public class GameStateUtils {
 
         Rook rook_black_2 = new Rook(7, 0, Owner.BLACK_PLAYER, gameState);
         figures.add(rook_black_2);
+
+        Knight knight_black_1 = new Knight(1, 0, Owner.BLACK_PLAYER, gameState);
+        figures.add(knight_black_1);
+
+        Knight knight_black_2 = new Knight(6, 0, Owner.BLACK_PLAYER, gameState);
+        figures.add(knight_black_2);
 
         King king_black = new King(4, 0, Owner.BLACK_PLAYER, gameState);
         figures.add(king_black);

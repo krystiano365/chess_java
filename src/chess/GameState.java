@@ -77,34 +77,30 @@ public class GameState {
                     }
                 }
             });
-        } else {
-            String winner = getOpponent() == Owner.WHITE_PLAYER ? "WHITES" : "BLACKS";
-            GameOverMenu gameover = new GameOverMenu(this, winner);
-            gameover.showMenu();
         }
-
 
 
         return startScreen;
     }
 
+    private void clearHighlights(){
+        normalColorTiles();
+        if (currentlyClickedFigure != null) {
+            moves.clear();
+            currentlyClickedFigure = null;
+        }
+        return;
+
+    }
+
     public EventHandler<MouseEvent> mapTileMouseHandler = (clickEvent) -> {
 
         if (clickEvent.getButton() == MouseButton.SECONDARY) {
-            normalColorTiles();
-            if (currentlyClickedFigure != null) {
-                moves.clear();
-                currentlyClickedFigure = null;
-            }
-            return;
+            clearHighlights();
         }
 
         int clickX = (int) (clickEvent.getX() / Consts.TILE_SIZE); //x, y w kafelkach (0-8) miejsca w ktore kliknieto
         int clickY = (int) (clickEvent.getY() / Consts.TILE_SIZE);
-
-        Tile t = mapTiles[clickX][clickY];
-        System.out.println("CLICK EVENT COORDINATES: Clicked X Y " + clickX + " " + clickY);
-        System.out.println("FIGURE COLOUR?: " + t.figureColour);
 
         boolean moveAllowed = false;
 
