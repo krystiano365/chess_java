@@ -36,7 +36,7 @@ public class GameStateUtils {
 
     }
 
-    static void spawnBlacks(GameState gameState, ArrayList<Figure> figures){
+    static void spawnBlacks(GameState gameState, ArrayList<Figure> figures) {
 
         Bishop bishop_black_1 = new Bishop(2, 0, Owner.BLACK_PLAYER, gameState);
         figures.add(bishop_black_1);
@@ -67,5 +67,5 @@ public class GameStateUtils {
         }
 
     }
-    
+
 }

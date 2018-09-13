@@ -14,12 +14,12 @@ public abstract class Menu {
     static int menuWindowUpperBound;
     GameState gameState;
 
-    public Menu(GameState gameState, int menuWindowUpperBound){
+    public Menu(GameState gameState, int menuWindowUpperBound) {
         this.gameState = gameState;
         Menu.menuWindowUpperBound = menuWindowUpperBound;
     }
 
-    public static Pane createBackground(int width, int height){
+    public static Pane createBackground(int width, int height) {
         Rectangle transparentBackground = new Rectangle(Consts.WINDOW_WIDTH, Consts.WINDOW_HEIGHT);
         transparentBackground.setFill(Color.rgb(0, 0, 0, 0.5));
 
@@ -28,7 +28,7 @@ public abstract class Menu {
         pauseBackground.setArcWidth(20);
         pauseBackground.setFill(Color.WHITE);
         pauseBackground.setStroke(Color.BLACK);
-        pauseBackground.setLayoutX(Consts.WINDOW_WIDTH/2 - width/2);
+        pauseBackground.setLayoutX(Consts.WINDOW_WIDTH / 2 - width / 2);
         pauseBackground.setLayoutY(menuWindowUpperBound);
 
         return new Pane(transparentBackground, pauseBackground);
@@ -37,38 +37,38 @@ public abstract class Menu {
     public Text createText(String label) {
         Text pauseText = new Text(label);
         pauseText.setFont(Font.font("verdana", FontWeight.BOLD, 40));
-        pauseText.setX(Consts.WINDOW_WIDTH/2 - pauseText.getLayoutBounds().getWidth()/2);
+        pauseText.setX(Consts.WINDOW_WIDTH / 2 - pauseText.getLayoutBounds().getWidth() / 2);
         pauseText.setY(menuWindowUpperBound + pauseText.getLayoutBounds().getHeight());
         return pauseText;
     }
 
-    public Button createButton(String label, int elementNumberInButtonsRow){
-        final int spacing  = 100;
+    public Button createButton(String label, int elementNumberInButtonsRow) {
+        final int spacing = 100;
         Button button = new Button();
         button.setText(label);
         button.setPrefSize(Consts.BUTTON_WIDTH, Consts.BUTTON_HEIGHT);
-        button.setLayoutX(Consts.WINDOW_WIDTH / 2 - Consts.BUTTON_WIDTH/2);
+        button.setLayoutX(Consts.WINDOW_WIDTH / 2 - Consts.BUTTON_WIDTH / 2);
         button.setLayoutY(menuWindowUpperBound + elementNumberInButtonsRow * spacing);
         return button;
     }
 
-    public void setExitButtonHandlers(Button exitButton){
+    public void setExitButtonHandlers(Button exitButton) {
         exitButton.setOnAction(event -> System.exit(0));
         exitButton.setOnKeyPressed(event -> {
-            if(event.getCode() == KeyCode.ENTER){
+            if (event.getCode() == KeyCode.ENTER) {
                 System.exit(0);
             }
         });
     }
 
 
-    public void setContinueButtonHandlers(Button continueButton){
+    public void setContinueButtonHandlers(Button continueButton) {
         continueButton.setOnAction(event -> {
             hideMenu();
             gameState.pauseMenuShown = false;
         });
         continueButton.setOnKeyPressed(event -> {
-            if(event.getCode() == KeyCode.ENTER) {
+            if (event.getCode() == KeyCode.ENTER) {
                 hideMenu();
                 gameState.pauseMenuShown = false;
             }

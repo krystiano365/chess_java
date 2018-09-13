@@ -15,14 +15,14 @@ public class GameOverMenu extends Menu {
         createGameoverMenu();
     }
 
-    private void createGameoverMenu(){
+    private void createGameoverMenu() {
 
         Button exitButton = createButton("EXIT", 1);
         Text gameoverText = createText(winner + " WIN!");
         setExitButtonHandlers(exitButton);
 
         menuPane.getChildren().addAll(
-                createBackground((int)(gameoverText.getLayoutBounds().getWidth() + 100), Consts.GAMEOVER_MENU_HEIGHT),
+                createBackground((int) (gameoverText.getLayoutBounds().getWidth() + 100), Consts.GAMEOVER_MENU_HEIGHT),
                 gameoverText,
                 exitButton
 

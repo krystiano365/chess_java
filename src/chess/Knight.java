@@ -14,14 +14,14 @@ public class Knight extends Figure {
         int x = currentPosition.x;
         int y = currentPosition.y;
 
-        validateMove(x-2, y+1, points);
-        validateMove(x+2, y+1, points);
-        validateMove(x-2, y-1, points);
-        validateMove(x+2, y-1, points);
-        validateMove(x-1, y+2, points);
-        validateMove(x+1, y+2, points);
-        validateMove(x-1, y-2, points);
-        validateMove(x+1, y-2, points);
+        validateMove(x - 2, y + 1, points);
+        validateMove(x + 2, y + 1, points);
+        validateMove(x - 2, y - 1, points);
+        validateMove(x + 2, y - 1, points);
+        validateMove(x - 1, y + 2, points);
+        validateMove(x + 1, y + 2, points);
+        validateMove(x - 1, y - 2, points);
+        validateMove(x + 1, y - 2, points);
 
 
         return points;

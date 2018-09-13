@@ -2,7 +2,6 @@ package chess;
 
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
@@ -21,7 +20,7 @@ public class GameState {
     public Figure currentlyClickedFigure;
     public List<Point> pawnEnPassantPoints = new ArrayList<>();
     boolean pauseMenuShown = false;
-    boolean kingKilled = !true;
+    boolean kingKilled = false;
 
     public GameState() {
         createBoard();
@@ -29,8 +28,7 @@ public class GameState {
 
     public ArrayList<Figure> figures = new ArrayList<>(); //figury
     public Tile[][] mapTiles = new Tile[Consts.MAP_WIDTH][Consts.MAP_HEIGHT]; //kafelki mapy
-    public List<Point> moves; // możliwe ruchy
-    public Button startButton;
+    public List<Point> moves; // possible moves
     public Pane pane = new Pane();
 
     public void createBoard() {
@@ -83,7 +81,7 @@ public class GameState {
         return startScreen;
     }
 
-    private void clearHighlights(){
+    private void clearHighlights() {
         normalColorTiles();
         if (currentlyClickedFigure != null) {
             moves.clear();

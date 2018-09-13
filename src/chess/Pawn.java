@@ -5,7 +5,7 @@ import java.util.List;
 
 public class Pawn extends Figure {
 
-    public Pawn(int x, int y, Owner owner, GameState gameState){
+    public Pawn(int x, int y, Owner owner, GameState gameState) {
         super(x, y, FigureType.PAWN, gameState, owner);
     }
 
@@ -64,7 +64,7 @@ public class Pawn extends Figure {
     private void validateEnPassant(int x, int y, List<Point> points) {
         if (x < Consts.MAP_WIDTH && x >= 0 && y < Consts.MAP_HEIGHT && y >= 0) {
             if (gameState.mapTiles[x][y].figureColour == gameState.getOpponent()) {
-                int newY = (gameState.currentPlayer == Owner.WHITE_PLAYER ? y-1 : y+1);
+                int newY = (gameState.currentPlayer == Owner.WHITE_PLAYER ? y - 1 : y + 1);
                 if (gameState.mapTiles[x][newY].figureColour == Owner.NONE) {
                     Point p = new Point(x, newY);
                     points.add(p);

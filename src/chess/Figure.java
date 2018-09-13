@@ -18,10 +18,10 @@ import java.util.List;
 public abstract class Figure implements MoveValidator {
 
     public boolean killed;
-    public Tile field; //Tile to button odpowiadajacy temu pionkowi
-    public Point currentPosition;  //obecny x, y
-    public FigureType figureType; //typ figury np. BISHOP
-    public Owner owner; //BLACK_PLAYER lub WHITE_PLAYER
+    public Tile field; // field of Figure image
+    public Point currentPosition;  // current x, y
+    public FigureType figureType;
+    public Owner owner; //BLACK_PLAYER or WHITE_PLAYER
     public GameState gameState;
 
     public Figure(int x, int y, FigureType figureType, GameState gameState, Owner owner) {
@@ -30,74 +30,38 @@ public abstract class Figure implements MoveValidator {
         this.owner = owner;
         this.gameState = gameState;
 
-        gameState.mapTiles[x][y].figureColour = this.owner;   // określenie właściciela kafelka na którym stoi TA figura
+        gameState.mapTiles[x][y].figureColour = this.owner;   // defining Figure tile's owner
 
         field = new Tile(currentPosition.x, currentPosition.y);
-        field.addEventHandler(MouseEvent.MOUSE_CLICKED, figureMouseEvent); //dodanie obslugi inputu tego klawisza
-        this.gameState.pane.getChildren().add(field); //dodanie tego klawisza do jakiejs petli renderujacej (cos w tym stylu, to sprawia ze jest wyswietlane)
+        field.addEventHandler(MouseEvent.MOUSE_CLICKED, figureMouseEvent); // adding EventHandler to this FIGURE's image
+        this.gameState.pane.getChildren().add(field);
 
         try {
             String imageDir = System.getProperty("user.dir") + "/assets/" + figureType.toString() + "_" + owner.toString() + ".png";
             Image img = new Image(new FileInputStream(imageDir));
             this.field.setFill(new ImagePattern(img));
         } catch (FileNotFoundException e) {
-            System.out.println("Nie znaleziono pliku!");
+            System.out.println("File not found!");
             e.printStackTrace();
         }
     }
 
 
     public EventHandler<MouseEvent> figureMouseEvent = (clickEvent) -> {
-        System.out.println("Just clicked (this) " + figureType + " " + owner);
+        System.out.println("Just clicked (this) " + this.figureType + " " + this.owner);
 
         boolean killedThisFigure = false;
 
-        int clickX = (int) (clickEvent.getX() / Consts.TILE_SIZE); //x, y w kafelkach (0-8) miejsca w ktore kliknieto
+        int clickX = (int) (clickEvent.getX() / Consts.TILE_SIZE); // clickX/Y from <0;8>
         int clickY = (int) (clickEvent.getY() / Consts.TILE_SIZE);
 
-        System.out.println("FIGURE COLOUR?: " + gameState.mapTiles[clickX][clickY].figureColour);
-
         if (gameState.currentlyClickedFigure != null) {
-            System.out.println("Clicked before (gamesState.currentlyClickedFigure): " + gameState.currentlyClickedFigure.owner);
+            System.out.println("Current player (gameState.currentlyClickedFigure): " + gameState.currentlyClickedFigure.owner);
 
-            if (gameState.currentlyClickedFigure.owner != this.owner) {
-                for (Point p : gameState.moves) {
+            killedThisFigure = checkAndHandleKill();
 
-                    if (p.x == this.currentPosition.x && p.y == this.currentPosition.y) {
-
-                        removeTileFromView();
-
-                        gameState.currentlyClickedFigure.field.setX(p.x * Consts.TILE_SIZE);
-                        gameState.currentlyClickedFigure.field.setY(p.y * Consts.TILE_SIZE);
-
-                        int currentX = gameState.currentlyClickedFigure.currentPosition.x;
-                        int currentY = gameState.currentlyClickedFigure.currentPosition.y;
-
-                        gameState.mapTiles[currentX][currentY].figureColour = Owner.NONE;       // setting back Tile's properties
-
-                        currentX = gameState.currentlyClickedFigure.currentPosition.x = p.x;    // changing current position of the figure after move
-                        currentY = gameState.currentlyClickedFigure.currentPosition.y = p.y;
-                        gameState.mapTiles[currentX][currentY].figureColour = gameState.currentlyClickedFigure.owner;    // setting current Tile's properties
-
-                        killedThisFigure = true;
-                        killed = true;
-
-
-                        if(figureType == FigureType.KING){
-                            gameState.kingKilled = true;
-                            String winner = gameState.currentPlayer == Owner.WHITE_PLAYER ? "WHITES" : "BLACKS";
-                            GameOverMenu gameover = new GameOverMenu(gameState, winner);
-                            gameover.showMenu();
-                        }
-                        gameState.currentPlayer = gameState.currentPlayer == Owner.WHITE_PLAYER ? Owner.BLACK_PLAYER : Owner.WHITE_PLAYER;
-
-                    }
-                }
-            }
             gameState.normalColorTiles();
             gameState.moves.clear();
-
-
         }
 
         if (killedThisFigure || (gameState.currentPlayer != this.owner))
@@ -108,6 +72,57 @@ public abstract class Figure implements MoveValidator {
         Point clickedPoint = new Point(clickX, clickY);
         gameState.moves = getPossibleMoves(clickedPoint);
 
+        //checkKingMoves();
+
+        for (Point p : gameState.moves) {
+            Tile t = gameState.mapTiles[p.x][p.y];
+            FigureUtils.highlightTile(t, gameState);
+        }
+
+    };
+
+    private boolean checkAndHandleKill() {
+
+        boolean killedThisFigure = false;
+
+        if (gameState.currentlyClickedFigure.owner != this.owner) {
+
+            for (Point p : gameState.moves) {
+
+                if (p.x == this.currentPosition.x && p.y == this.currentPosition.y) {
+
+                    removeTileFromView();
+
+                    gameState.currentlyClickedFigure.field.setX(p.x * Consts.TILE_SIZE);
+                    gameState.currentlyClickedFigure.field.setY(p.y * Consts.TILE_SIZE);
+
+                    int currentX = gameState.currentlyClickedFigure.currentPosition.x;
+                    int currentY = gameState.currentlyClickedFigure.currentPosition.y;
+
+                    gameState.mapTiles[currentX][currentY].figureColour = Owner.NONE;       // resetting Tile's owner to NONE
+                    currentX = gameState.currentlyClickedFigure.currentPosition.x = p.x;    // changing current position of the figure after move
+                    currentY = gameState.currentlyClickedFigure.currentPosition.y = p.y;
+                    gameState.mapTiles[currentX][currentY].figureColour = gameState.currentlyClickedFigure.owner;    // setting current Tile's properties
+
+                    killedThisFigure = true;
+                    killed = true;
+                    System.out.println(gameState.currentlyClickedFigure.owner + " kills " + this.figureType);
+
+                    if (figureType == FigureType.KING) {
+                        gameState.kingKilled = true;
+                        String winner = gameState.currentPlayer == Owner.WHITE_PLAYER ? "WHITES" : "BLACKS";
+                        GameOverMenu gameover = new GameOverMenu(gameState, winner);
+                        gameover.showMenu();
+                    }
+                    gameState.currentPlayer = gameState.currentPlayer == Owner.WHITE_PLAYER ? Owner.BLACK_PLAYER : Owner.WHITE_PLAYER;
+
+                }
+            }
+        }
+        return killedThisFigure;
+    }
+
+    void checkKingMoves() {
         if (figureType == FigureType.KING) {
 
             Owner opponent = gameState.getOpponent();
@@ -120,17 +135,10 @@ public abstract class Figure implements MoveValidator {
                 }
             }
         }
-
-
-        for (Point p : gameState.moves) {
-            Tile t = gameState.mapTiles[p.x][p.y];
-            FigureUtils.highlightTile(t, gameState);
-        }
-
-    };
+    }
 
     public void removeTileFromView() {
-        this.gameState.pane.getChildren().remove(this.field);
+        this.gameState.pane.getChildren().remove(this.field);  // removing figure tile from Layout
         killed = true;
     }
 
