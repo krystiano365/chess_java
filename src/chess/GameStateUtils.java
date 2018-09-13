@@ -1,5 +1,7 @@
 package chess;
 
+import chess.figures.*;
+
 import java.util.ArrayList;
 
 public class GameStateUtils {

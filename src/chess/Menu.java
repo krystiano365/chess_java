@@ -11,8 +11,8 @@ import javafx.scene.text.Text;
 
 public abstract class Menu {
     Pane menuPane = new Pane();
-    static int menuWindowUpperBound;
-    GameState gameState;
+    private static int menuWindowUpperBound;
+    private GameState gameState;
 
     public Menu(GameState gameState, int menuWindowUpperBound) {
         this.gameState = gameState;

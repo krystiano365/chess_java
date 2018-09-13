@@ -87,8 +87,17 @@ public class GameState {
             moves.clear();
             currentlyClickedFigure = null;
         }
-        return;
 
+    }
+
+    void moveFigure(int clickX, int clickY){
+        currentlyClickedFigure.field.setX(clickX * Consts.TILE_SIZE);
+        currentlyClickedFigure.field.setY(clickY * Consts.TILE_SIZE);
+        mapTiles[currentlyClickedFigure.currentPosition.x][currentlyClickedFigure.currentPosition.y].figureColour = Owner.NONE;
+        currentlyClickedFigure.currentPosition.x = clickX;
+        currentlyClickedFigure.currentPosition.y = clickY;
+        mapTiles[currentlyClickedFigure.currentPosition.x][currentlyClickedFigure.currentPosition.y].figureColour = currentlyClickedFigure.owner;
+        currentPlayer = currentPlayer == Owner.WHITE_PLAYER ? Owner.BLACK_PLAYER : Owner.WHITE_PLAYER;
     }
 
     public EventHandler<MouseEvent> mapTileMouseHandler = (clickEvent) -> {
@@ -97,12 +106,12 @@ public class GameState {
             clearHighlights();
         }
 
-        int clickX = (int) (clickEvent.getX() / Consts.TILE_SIZE); //x, y w kafelkach (0-8) miejsca w ktore kliknieto
+        int clickX = (int) (clickEvent.getX() / Consts.TILE_SIZE); // clickX/Y from <0;8>
         int clickY = (int) (clickEvent.getY() / Consts.TILE_SIZE);
 
         boolean moveAllowed = false;
 
-        if (currentlyClickedFigure != null) {  // poruszanie się po uprzednim wybraniu figury
+        if (currentlyClickedFigure != null) {  // move if player has already picked a figure to control
 
             for (Point p : moves) {
                 if (p.x == clickX && p.y == clickY) {
@@ -111,35 +120,11 @@ public class GameState {
             }
 
             if (moveAllowed) {
-                currentlyClickedFigure.field.setX(clickX * Consts.TILE_SIZE);
-                currentlyClickedFigure.field.setY(clickY * Consts.TILE_SIZE);
-                mapTiles[currentlyClickedFigure.currentPosition.x][currentlyClickedFigure.currentPosition.y].figureColour = Owner.NONE;
-                currentlyClickedFigure.currentPosition.x = clickX;
-                currentlyClickedFigure.currentPosition.y = clickY;
-                mapTiles[currentlyClickedFigure.currentPosition.x][currentlyClickedFigure.currentPosition.y].figureColour = currentlyClickedFigure.owner;
-                currentPlayer = currentPlayer == Owner.WHITE_PLAYER ? Owner.BLACK_PLAYER : Owner.WHITE_PLAYER;
+                moveFigure(clickX, clickY);
             }
 
             if (pawnEnPassantPoints != null) {
-                for (Point p : pawnEnPassantPoints) {
-                    if (p.x == clickX && p.y == clickY) {
-                        //if white, you can en passant only down
-                        System.out.println("checking enPassant");
-                        int en_passant_y = 0;
-                        if (currentPlayer == Owner.WHITE_PLAYER)
-                            en_passant_y = p.y - 1;
-                        else if (currentPlayer == Owner.BLACK_PLAYER)
-                            en_passant_y = p.y + 1;
-
-                        for (Figure figure : figures) {
-                            if (figure.currentPosition.x == p.x && figure.currentPosition.y == en_passant_y) {
-                                figure.removeTileFromView();
-                                break;
-                            }
-                        }
-
-                    }
-                }
+                handleEnPassantMove(clickX, clickY);
                 pawnEnPassantPoints.clear();
             }
 
@@ -150,6 +135,27 @@ public class GameState {
         }
 
     };
+
+    private void handleEnPassantMove(int clickX, int clickY){
+        for (Point p : pawnEnPassantPoints) {
+            if (p.x == clickX && p.y == clickY) {
+                //if white, you can do en passant only up and kill figure below your position
+                System.out.println("checking enPassant");
+                int en_passant_y = 0;
+                if (currentPlayer == Owner.WHITE_PLAYER)
+                    en_passant_y = p.y - 1;
+                else if (currentPlayer == Owner.BLACK_PLAYER)
+                    en_passant_y = p.y + 1;
+
+                for (Figure figure : figures) {
+                    if (figure.currentPosition.x == p.x && figure.currentPosition.y == en_passant_y) {
+                        figure.removeTileFromView(); // kill figure that is below(W) or behind(B) current position of PAWN
+                        break;
+                    }
+                }
+            }
+        }
+    }
 
     public Owner getOpponent() {
         if (this.currentPlayer == Owner.WHITE_PLAYER) {
