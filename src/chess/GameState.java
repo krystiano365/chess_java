@@ -140,7 +140,7 @@ public class GameState {
         for (Point p : pawnEnPassantPoints) {
             if (p.x == clickX && p.y == clickY) {
                 //if white, you can do en passant only up and kill figure below your position
-                System.out.println("checking enPassant");
+
                 int en_passant_y = 0;
                 if (currentPlayer == Owner.WHITE_PLAYER)
                     en_passant_y = p.y - 1;
@@ -149,6 +149,7 @@ public class GameState {
 
                 for (Figure figure : figures) {
                     if (figure.currentPosition.x == p.x && figure.currentPosition.y == en_passant_y) {
+                        mapTiles[figure.currentPosition.x][figure.currentPosition.y].figureColour = Owner.NONE; // resetting enPassant killed Figure tile owner to NONE
                         figure.removeTileFromView(); // kill figure that is below(W) or behind(B) current position of PAWN
                         break;
                     }

@@ -81,7 +81,7 @@ public abstract class Figure implements MoveValidator {
 
     };
 
-    private boolean checkAndHandleKill() {
+    public boolean checkAndHandleKill() {
 
         boolean killedThisFigure = false;
 
